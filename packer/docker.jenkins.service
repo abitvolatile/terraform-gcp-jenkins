@@ -1,0 +1,15 @@
+[Unit]
+Description=Jenkins Master Docker Container
+After=docker.service
+Requires=docker.service
+
+[Service]
+TimeoutStartSec=0
+Restart=always
+ExecStartPre=-/usr/bin/docker stop jenkins-master
+ExecStartPre=-/usr/bin/docker rm -f jenkins-master
+ExecStart=/usr/bin/docker run --name jenkins-master -p 8080:8080 -p 50000:50000 -v /mnt/disks/data/jenkins_home:/var/jenkins_home --rm jenkins-master:latest
+ExecStop=/usr/bin/docker stop jenkins-master
+
+[Install]
+WantedBy=multi-user.target

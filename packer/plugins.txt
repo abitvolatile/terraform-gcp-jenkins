@@ -1,0 +1,7 @@
+# plugins
+blueocean:1.19.0
+slack:2.34
+build-pipeline-plugin:1.5.8
+github-pullrequest:0.2.6
+google-compute-engine:4.0.0
+google-kubernetes-engine:0.7.0

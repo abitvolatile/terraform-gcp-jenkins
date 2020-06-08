@@ -1,0 +1,71 @@
+{
+    "variables": {
+        "image_name_prefix": "jenkins-master",
+        "image_family": "jenkins-master"
+    },
+    "builders": [
+        {
+            "type": "googlecompute",
+            "project_id": "{{ user `project_id`}}",
+            "source_image_family": "centos-7",
+            "source_image_project_id": "centos-cloud",
+            "image_name": "{{ user `image_name_prefix` }}-{{timestamp}}",
+            "image_family": "{{ user `image_family` }}",
+            "ssh_username": "packer",
+            "zone": "{{ user `image_zone` }}-b",
+            "disk_size": "20",
+            "scopes": []
+        }
+    ],
+    "provisioners": [
+      {
+        "type": "shell",
+        "inline": [
+          "mkdir -p /tmp/repos/jenkins-master/packer/"
+        ]
+      },
+      {
+        "type": "file",
+        "destination": "/tmp/repos/jenkins-master/packer/install-docker.sh",
+        "source": "install-docker.sh"
+      },
+      {
+        "type": "shell",
+        "inline": [
+          "cd /tmp/repos/jenkins-master/packer/",
+          "chmod a+x install-docker.sh",
+          "sudo ./install-docker.sh"
+        ]
+      },
+      {
+        "type": "file",
+        "destination": "/tmp/repos/jenkins-master/packer/Dockerfile",
+        "source": "Dockerfile"
+      },
+      {
+        "type": "file",
+        "destination": "/tmp/repos/jenkins-master/packer/plugins.txt",
+        "source": "plugins.txt"
+      },
+      {
+        "type": "shell",
+        "inline": [
+          "cd /tmp/repos/jenkins-master/packer/",
+          "sudo docker build -t jenkins-master:latest ."
+        ]
+      },
+      {
+        "type": "file",
+        "destination": "/tmp/repos/jenkins-master/packer/docker.jenkins.service",
+        "source": "docker.jenkins.service"
+      },
+      {
+        "type": "shell",
+        "inline": [
+          "sudo cp /tmp/repos/jenkins-master/packer/docker.jenkins.service /etc/systemd/system/docker.jenkins.service",
+          "sudo systemctl daemon-reload",
+          "sudo systemctl enable docker.jenkins.service"
+        ]
+      }
+    ]
+}

@@ -1,0 +1,10 @@
+name: 'Container Build'
+description: 'Build/Run custom Docker image (via Dockerfile) for Testing Terraform Resource Module.'
+runs:
+  using: 'docker'
+  image: '../../../Dockerfile'
+outputs:
+  project-id:
+    description: 'This is the Google Cloud Project ID.'
+  org-id:
+    description: 'This is the Google Cloud Organization ID.'
