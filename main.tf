@@ -3,7 +3,7 @@
 # Setting local variables for the sake of reusability of resouces described below
 
 locals {
-  instance-ip   = "${cidrhost(data.google_compute_subnetwork.jenkins-cidr-range.ip_cidr_range, 100)}"
+  instance-ip = "${cidrhost(data.google_compute_subnetwork.jenkins-cidr-range.ip_cidr_range, 100)}"
 }
 
 
