@@ -24,3 +24,7 @@ variable "local_public_ip" {
 variable "shared_image_project" {
   description = "Google Project where GCE Image resides"
 }
+
+variable "jenkins_instance_type" {
+  description = "Jenkins Master Instance Type"
+}
