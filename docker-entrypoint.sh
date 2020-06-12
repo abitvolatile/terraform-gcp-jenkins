@@ -52,7 +52,7 @@ tf_init "$BUCKET_NAME" "live/${TF_VAR_google_project_base}-${UID_STRING}"
 # Packer Build
 echo
 echo "Now Performing Packer Build of Machine Image(s)"
-packer_build "$BASE_DIR/packer/" "$PROJECT_DIR/$MODULE_DIR.auto.tfvars"
+packer_build "$BASE_DIR/packer/" "$PROJECT_DIR/example.auto.tfvars"
 
 
 
