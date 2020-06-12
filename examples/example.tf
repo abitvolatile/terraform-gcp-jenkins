@@ -91,4 +91,6 @@ module "jenkins-master" {
   google_compute_network = module.vpc-networking.google_compute_network_name
   local_public_ip        = module.public_ip.public_ip
   shared_image_project   = var.shared_image_project
+  jenkins_instance_type  = var.jenkins_instance_type
+  jenkins_data_disk_size = var.jenkins_data_disk_size
 }

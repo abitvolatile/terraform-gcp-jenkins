@@ -3,7 +3,6 @@
 # Setting local variables for the sake of reusability of resouces described below
 
 locals {
-  instance-type = "n1-standard-1"
   instance-ip   = "${cidrhost(data.google_compute_subnetwork.jenkins-cidr-range.ip_cidr_range, 100)}"
 }
 
@@ -31,17 +30,6 @@ data "google_compute_image" "jenkins_image" {
   family  = "jenkins-master"
 }
 
-# Collect Latest CentOS Compute Image
-#data "google_compute_image" "jenkins_image" {
-#  depends_on = [
-#    "google_project_service.compute"
-#  ]
-#  provider   = "google-beta"
-#  project    = "centos-cloud"
-#
-#  family     = "centos-7"
-#}
-
 
 data "google_compute_subnetwork" "jenkins-cidr-range" {
   depends_on = [
@@ -62,16 +50,16 @@ resource "google_project_service" "compute" {
   disable_on_destroy = false
 }
 
-resource "google_compute_disk" "jenkins-master-data" {
+resource "google_compute_disk" "jenkins-master-data-disk" {
   depends_on = [
     google_project_iam_member.cross-project-role-source-image-project,
     google_project_iam_member.jenkins-master-service-account-editor,
     google_service_account.jenkins-master-service-account,
     google_compute_subnetwork.jenkins
   ]
-  name = "jenkins-master-data"
+  name = "jenkins-master-data-disk"
   type = "pd-standard"
-  size = "10"
+  size = var.jenkins_data_disk_size
   zone = data.google_compute_zones.available.names[0]
 
   labels = {
@@ -107,7 +95,7 @@ resource "google_compute_instance_template" "jenkins-master" {
   }
 
   region         = var.google_region["single"]
-  machine_type   = local.instance-type
+  machine_type   = var.jenkins_instance_type
   can_ip_forward = false
 
   scheduling {
@@ -117,7 +105,7 @@ resource "google_compute_instance_template" "jenkins-master" {
   }
 
   disk {
-    disk_name    = "jenkins-master-boot"
+    disk_name    = "jenkins-master-boot-disk"
     source_image = data.google_compute_image.jenkins_image.self_link
     auto_delete  = true
     boot         = true
@@ -126,7 +114,7 @@ resource "google_compute_instance_template" "jenkins-master" {
   }
 
   disk {
-    source      = google_compute_disk.jenkins-master-data.name
+    source      = google_compute_disk.jenkins-master-data-disk.name
     auto_delete = false
     boot        = false
     device_name = "sdb"

@@ -16,7 +16,7 @@ RUN brew install tfenv
 ###         Deployable Artifact Container Image         ###
 ###########################################################
 
-FROM golang:1.14.2-alpine3.11
+FROM alpine:3.11
 
 ARG NON_ROOT_USER=alpine
 ARG NON_ROOT_USER_HOME=/home/${NON_ROOT_USER}
@@ -42,14 +42,9 @@ RUN addgroup -g 1000 ${NON_ROOT_USER} && \
 # Download/Install Package Dependencies
 RUN apk update && \
     apk upgrade && \
-    apk add jq unzip bash curl
-
-# Install Python3 Runtime
-RUN apk add --no-cache --update python3
-
-
-# Cleanup Package Manager Cache
-RUN rm -rf /var/cache/apk/*
+    apk add jq unzip bash curl && \
+    apk add --no-cache --update python3 ### Install Python3 Runtime && \
+    rm -rf /var/cache/apk/* ### Cleanup Package Manager Cache
 
 
 
@@ -57,11 +52,12 @@ RUN rm -rf /var/cache/apk/*
 # ##### Binaries
 
 # Install HCL Command-line Parsing Tool (pyhcl)
-RUN pip3 install pyhcl
+RUN pip3 install pyhcl --no-cache-dir
 
 # Download/Extract Packer
-RUN wget https://releases.hashicorp.com/packer/${PACKER_VERSION}/packer_${PACKER_VERSION}_linux_amd64.zip -q -nv -P /root
-RUN unzip /root/packer_${PACKER_VERSION}_linux_amd64.zip -d /usr/local/bin/
+RUN wget https://releases.hashicorp.com/packer/${PACKER_VERSION}/packer_${PACKER_VERSION}_linux_amd64.zip -q -nv -P /root && \
+    unzip /root/packer_${PACKER_VERSION}_linux_amd64.zip -d /usr/local/bin/ && \
+    rm -rf /root/packer_${PACKER_VERSION}_linux_amd64.zip
 
 # Copy Binaries from Scratch Images
 COPY --from=homebrew-scratch --chown=${NON_ROOT_USER} /home/linuxbrew/.linuxbrew/opt/tfenv ${NON_ROOT_USER_HOME}/.tfenv
@@ -93,7 +89,7 @@ ENV PATH=${NON_ROOT_USER_HOME}/.tfenv/bin:$PATH
 ENV SHELL=/bin/bash
 
 # Install Terraform Binaries
-RUN tfenv install ${TERRAFORM_VERSION} && tfenv use ${TERRAFORM_VERSION}
+#RUN tfenv install ${TERRAFORM_VERSION} && tfenv use ${TERRAFORM_VERSION}
 
 
 

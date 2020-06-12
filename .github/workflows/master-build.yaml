@@ -26,8 +26,8 @@ jobs:
         # Writes Outputs with Values Stored in the Environment Variables
         echo "::set-output name=uid-string::$UID_STRING"
         echo "::set-output name=uid-hash::$UID_HASH"
-      env: ### NOTE: PLEASE REVIEW THESE VALUES! ###
-        UID_STRING: '219fb6'    # This is the "Input" string that gets converted into a Hash and used later...
+      env: ### NOTE: PLEASE REVIEW & SET THESE VALUES! ###
+        UID_STRING: ${{ secrets.UID_STRING }}
 
     - name: Prints the UIDs (string & hash) from previous step
       id: print_uid
@@ -38,17 +38,17 @@ jobs:
     - name: Build Container Image from Dockerfile Using Github Action (action.yaml)
       id: container_build
       uses: ./.github/actions/container_build
-      env: ### NOTE: PLEASE REVIEW THESE VALUES! ###
+      env: ### NOTE: PLEASE REVIEW & SET THESE VALUES! ###
         TERRAFORM_CREDENTIALS: ${{ secrets.TERRAFORM_CREDENTIALS }}  
         TF_CLI_CONFIG_FILE: '/home/alpine/.terraformrc'
         GOOGLE_CLOUD_KEYFILE_JSON: ${{ secrets.GOOGLE_CLOUD_KEYFILE_JSON }}
         GOOGLE_APPLICATION_CREDENTIALS: '/home/alpine/.service_account.json'
-        BUCKET_NAME: 'awilliams-terraform-state'
-        TF_VAR_google_billing_account:  '01C63B-00E8A3-6F1D28'     # ${{ secrets.GOOGLE_BILLING_ACCOUNT }}
-        TF_VAR_google_org_id: '718290421865'
-        TF_VAR_google_project_base: 'tf-gcp-project'
-        UID_STRING: ${{ steps.hashing-uid.outputs.uid-string }}    # Reusing the UID String from the step above ('convert_hash')
-        UID_HASH: ${{ steps.hashing-uid.outputs.uid-hash }}        # Here is the converted UID Hash from the step above ('convert_hash')
+        BUCKET_NAME: ${{ secrets.BUCKET_NAME }}
+        TF_VAR_google_billing_account:  ${{ secrets.GOOGLE_BILLING_ACCOUNT }}
+        TF_VAR_google_org_id: ${{ secrets.GOOGLE_ORG_ID }}
+        TF_VAR_google_project_base: ${{ secrets.GOOGLE_PROJECT_BASE }}
+        UID_STRING: ${{ steps.hashing-uid.outputs.uid-string }}    # UID String from the step above ('convert_hash')
+        UID_HASH: ${{ steps.hashing-uid.outputs.uid-hash }}        # Converted UID Hash from the step above ('convert_hash')
 
     - name: Print Terraform Outputs
       id: print_tf_outputs
