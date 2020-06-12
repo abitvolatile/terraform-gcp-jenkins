@@ -52,7 +52,7 @@ tf_init "$BUCKET_NAME" "live/${TF_VAR_google_project_base}-${UID_STRING}"
 # Packer Build
 echo
 echo "Now Performing Packer Build of Machine Image(s)"
-packer_build "$PROJECT_DIR/.terraform/modules/<module_name>/packer/" "$PROJECT_DIR/environment.auto.tfvars"
+packer_build "$PROJECT_DIR/.terraform/modules/jenkins/packer/" "$PROJECT_DIR/environment.auto.tfvars"
 
 
 
