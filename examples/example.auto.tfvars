@@ -23,7 +23,7 @@ google_region = {
   multi  = "US"
 }
 
-shared_image_project   = "shared-ops"
+shared_image_project = "shared-ops"
 
 jenkins_instance_type  = "n1-standard-1"
 jenkins_data_disk_size = "10"
