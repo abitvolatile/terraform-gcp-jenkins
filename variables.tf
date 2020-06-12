@@ -28,3 +28,7 @@ variable "shared_image_project" {
 variable "jenkins_instance_type" {
   description = "Jenkins Master Instance Type"
 }
+
+variable "jenkins_data_disk_size" {
+  description = "Jenkins Master Data Disk Size"
+}
