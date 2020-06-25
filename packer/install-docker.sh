@@ -1,8 +1,9 @@
 #!/bin/bash
 
-sudo yum install -y yum-utils \
-  device-mapper-persistent-data \
-  lvm2
+sudo yum clean all
+sudo rm -rf /var/cache/yum
+
+sudo yum install -y yum-utils
 
 sudo yum-config-manager \
     --add-repo \
